@@ -6,23 +6,18 @@ function data = ProcessCDF(FileName)
 % INPUT: FileName                                          %
 % OUTPUT: Struct <data> containing variables & attributes  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-cdfID = cdflib.open(FileName);
-info = cdfinfo(FileName);
+[rawData,info] = cdfread(FileName,...
+    'Structure',true,'ConvertEpochToDatenum',true);
 
-varInfo  = info.Variables;
-gAttInfo = info.GlobalAttributes;
-vAttInfo = info.VariableAttributes;
-
-varNames = varInfo(:,1);
-varTypes = varInfo(:,4);
+varNames = info.Variables(:,1);
+% varTypes = info.Variables(:,4);
 
 numVars = length(varNames);
-rawData = cdfread(FileName,'ConvertEpochToDatenum',true);
 
-gNumAtts = cdflib.getNumgAttributes(cdfID);
-gAttNames = fieldnames(gAttInfo);
-vNumAtts = cdflib.getNumAttributes(cdfID);
-vAttNames = fieldnames(vAttInfo);
+gAttNames = fieldnames(info.GlobalAttributes);
+gNumAtts = length(gAttNames);
+vAttNames = fieldnames(info.VariableAttributes);
+vNumAtts = length(vAttNames);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % For each variable, check to see if it needs to be       %
@@ -32,12 +27,7 @@ vAttNames = fieldnames(vAttInfo);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if numVars > 0
     for i1 = 1:numVars
-%        if strcmp('epoch',varTypes(i1))
-%            data.('Variables').(varNames{i1}) = ...
-%                datestr(cell2mat(rawData(:,i1)),'dd/mm/yyyy HH:MM:SS');
-%        else
-            data.('Variables').(varNames{i1}) =  cell2mat(rawData(:,i1));
-%        end
+        data.Variables.(varNames{i1}) =  rawData(i1,1).Data;
     end
 end
 
@@ -47,8 +37,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if gNumAtts > 0
     for i2 = 1:gNumAtts
-            data.('GlobalAttributes').(gAttNames{i2}) =...
-                gAttInfo.(gAttNames{i2});
+            data.GlobalAttributes.(gAttNames{i2}) =...
+                info.GlobalAttributes.(gAttNames{i2});
     end
 end
 
@@ -59,8 +49,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if gNumAtts > 0
     for i3 = 1:vNumAtts
-            data.('VariableAttributes').(vAttNames{i3}) =...
-                vAttInfo.(vAttNames{i3});
+            data.VariableAttributes.(vAttNames{i3}) =...
+                info.VariableAttributes.(vAttNames{i3});
     end
 end
 
