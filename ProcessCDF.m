@@ -27,7 +27,11 @@ vNumAtts = length(vAttNames);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if numVars > 0
     for i1 = 1:numVars
-        data.Variables.(varNames{i1}) =  rawData(i1,1).Data;
+        if isa(rawData(i1,1).Data, 'single')
+            data.Variables.(varNames{i1}) =  double(rawData(i1,1).Data);
+        else
+            data.Variables.(varNames{i1}) =  rawData(i1,1).Data;
+        end
     end
 end
 
