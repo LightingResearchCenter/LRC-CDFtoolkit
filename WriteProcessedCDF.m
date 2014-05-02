@@ -7,6 +7,8 @@ function WriteProcessedCDF(InfoName,DataName,SaveName)
 % cdflib.open() and cdflib.delete()                         %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+addpath('daysimeterIO');
+
 ProcessedData = ReadRaw(InfoName,DataName);
 time = ProcessedData.time;
 
@@ -24,6 +26,10 @@ illuminance = ProcessedData.lux;
 CLA = ProcessedData.CLA;
 CS = ProcessedData.CS;
 activity = ProcessedData.activity;
+
+[~,fileName,~] = fileparts(SaveName);
+logicalArray = selectdata(fileName,time,CS,activity);
+
 %xAccel = 
 %yAccel =
 %zAccel =
@@ -54,6 +60,7 @@ cdfID = cdflib.create(SaveName);
 
 varTime = cdflib.createVar(cdfID,'time','CDF_EPOCH',1,[],true,[]);
 varTimeOffset = cdflib.createVar(cdfID,'timeOffset','CDF_REAL8',1,[],true,[]);
+varLogicalArray = cdflib.createVar(cdfID,'logicalArray','CDF_REAL8',1,[],true,[]);
 varRed = cdflib.createVar(cdfID,'red','CDF_REAL8',1,[],true,[]);
 varGreen = cdflib.createVar(cdfID,'green','CDF_REAL8',1,[],true,[]);
 varBlue = cdflib.createVar(cdfID,'blue','CDF_REAL8',1,[],true,[]);
@@ -77,6 +84,7 @@ varLatitude = cdflib.createVar(cdfID,'latitude','CDF_REAL8',1,[],true,[]);
 numRecords = length(time);
 cdflib.setVarAllocBlockRecords(cdfID,varTime,1,numRecords);
 cdflib.setVarAllocBlockRecords(cdfID,varTimeOffset,1,numRecords);
+cdflib.setVarAllocBlockRecords(cdfID,varLogicalArray,1,numRecords);
 cdflib.setVarAllocBlockRecords(cdfID,varRed,1,numRecords);
 cdflib.setVarAllocBlockRecords(cdfID,varGreen,1,numRecords);
 cdflib.setVarAllocBlockRecords(cdfID,varBlue,1,numRecords);
@@ -99,6 +107,7 @@ cdflib.setVarAllocBlockRecords(cdfID,varLatitude,1,numRecords);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 timeVarNum = cdflib.getVarNum(cdfID,'time');
 timeOffsetVarNum = cdflib.getVarNum(cdfID,'timeOffset');
+logicalArrayVarNum = cdflib.getVarNum(cdfID,'logicalArray');
 redVarNum = cdflib.getVarNum(cdfID,'red');
 greenVarNum = cdflib.getVarNum(cdfID,'green');
 blueVarNum = cdflib.getVarNum(cdfID,'blue');
@@ -122,6 +131,7 @@ latitudeVarNum = cdflib.getVarNum(cdfID,'latitude');
 for i1 = 1:numRecords
     cdflib.putVarData(cdfID,timeVarNum,i1-1,[],cdflib.computeEpoch(timeVec(i1,:)));
     cdflib.putVarData(cdfID,timeOffsetVarNum,i1-1,[],timeOffset(i1));
+    cdflib.putVarData(cdfID,logicalArrayVarNum,i1-1,[],logicalArray(i1));
     cdflib.putVarData(cdfID,redVarNum,i1-1,[],red(i1));
     cdflib.putVarData(cdfID,greenVarNum,i1-1,[],green(i1));
     cdflib.putVarData(cdfID,blueVarNum,i1-1,[],blue(i1));
@@ -161,6 +171,8 @@ cdflib.putAttrEntry(cdfID, numDescription, cdflib.getAttrMaxEntry(cdfID, numDesc
 cdflib.putAttrEntry(cdfID, numDescription, cdflib.getAttrMaxEntry(cdfID, numDescription) + 1, 'CDF_CHAR', ...
     ' ');
 cdflib.putAttrEntry(cdfID, numDescription, cdflib.getAttrMaxEntry(cdfID, numDescription) + 1, 'CDF_CHAR', ...
+    ' ');
+cdflib.putAttrEntry(cdfID, numDescription, cdflib.getAttrMaxEntry(cdfID, numDescription) + 1, 'CDF_CHAR', ...
     'Circadian Light');
 cdflib.putAttrEntry(cdfID, numDescription, cdflib.getAttrMaxEntry(cdfID, numDescription) + 1, 'CDF_CHAR', ...
     'Circadian Stimulus');
@@ -183,8 +195,10 @@ cdflib.putAttrEntry(cdfID, numDescription, cdflib.getAttrMaxEntry(cdfID, numDesc
 
 cdflib.putAttrEntry(cdfID, numUnitPrefix, cdflib.getAttrMaxEntry(cdfID, numUnitPrefix) + 1, 'CDF_CHAR', ...
     'm');
-%cdflib.putAttrEntry(cdfID, numUnitPrefix, cdflib.getAttrMaxEntry(cdfID, numUnitPrefix) + 1, 'CDF_CHAR', ...
-%    ' ');
+cdflib.putAttrEntry(cdfID, numUnitPrefix, cdflib.getAttrMaxEntry(cdfID, numUnitPrefix) + 1, 'CDF_CHAR', ...
+   ' ');
+cdflib.putAttrEntry(cdfID, numUnitPrefix, cdflib.getAttrMaxEntry(cdfID, numUnitPrefix) + 1, 'CDF_CHAR', ...
+   ' ');
 cdflib.putAttrEntry(cdfID, numUnitPrefix, cdflib.getAttrMaxEntry(cdfID, numUnitPrefix) + 1, 'CDF_CHAR', ...
     ' ');
 cdflib.putAttrEntry(cdfID, numUnitPrefix, cdflib.getAttrMaxEntry(cdfID, numUnitPrefix) + 1, 'CDF_CHAR', ...
@@ -216,8 +230,10 @@ cdflib.putAttrEntry(cdfID, numUnitPrefix, cdflib.getAttrMaxEntry(cdfID, numUnitP
 
 cdflib.putAttrEntry(cdfID, numUnitBase, cdflib.getAttrMaxEntry(cdfID, numUnitBase) + 1, 'CDF_CHAR', ...
     's');
-%cdflib.putAttrEntry(cdfID, numBaseUnit, cdflib.getAttrMaxEntry(cdfID, numBaseUnit) + 1, 'CDF_CHAR', ...
-%    's');
+cdflib.putAttrEntry(cdfID, numUnitBase, cdflib.getAttrMaxEntry(cdfID, numUnitBase) + 1, 'CDF_CHAR', ...
+    'hr');
+cdflib.putAttrEntry(cdfID, numUnitBase, cdflib.getAttrMaxEntry(cdfID, numUnitBase) + 1, 'CDF_CHAR', ...
+    ' ');
 cdflib.putAttrEntry(cdfID, numUnitBase, cdflib.getAttrMaxEntry(cdfID, numUnitBase) + 1, 'CDF_CHAR', ...
     'lx');
 cdflib.putAttrEntry(cdfID, numUnitBase, cdflib.getAttrMaxEntry(cdfID, numUnitBase) + 1, 'CDF_CHAR', ...
@@ -249,8 +265,10 @@ cdflib.putAttrEntry(cdfID, numUnitBase, cdflib.getAttrMaxEntry(cdfID, numUnitBas
 
 cdflib.putAttrEntry(cdfID, numUnitType, cdflib.getAttrMaxEntry(cdfID, numUnitType) + 1, 'CDF_CHAR', ...
     'baseSI');
-%cdflib.putAttrEntry(cdfID, numUnitType, cdflib.getAttrMaxEntry(cdfID, numUnitType) + 1, 'CDF_CHAR', ...
-%    'baseSI');
+cdflib.putAttrEntry(cdfID, numUnitType, cdflib.getAttrMaxEntry(cdfID, numUnitType) + 1, 'CDF_CHAR', ...
+   'namedSI');
+cdflib.putAttrEntry(cdfID, numUnitType, cdflib.getAttrMaxEntry(cdfID, numUnitType) + 1, 'CDF_CHAR', ...
+   ' ');
 cdflib.putAttrEntry(cdfID, numUnitType, cdflib.getAttrMaxEntry(cdfID, numUnitType) + 1, 'CDF_CHAR', ...
     'namedSI');
 cdflib.putAttrEntry(cdfID, numUnitType, cdflib.getAttrMaxEntry(cdfID, numUnitType) + 1, 'CDF_CHAR', ...
@@ -282,8 +300,10 @@ cdflib.putAttrEntry(cdfID, numUnitType, cdflib.getAttrMaxEntry(cdfID, numUnitTyp
 
 cdflib.putAttrEntry(cdfID, numOther, cdflib.getAttrMaxEntry(cdfID, numOther) + 1, 'CDF_CHAR', ...
     ' ');
-%cdflib.putAttrEntry(cdfID, numOther, cdflib.getAttrMaxEntry(cdfID, numOther) + 1, 'CDF_CHAR', ...
-%    ' ');
+cdflib.putAttrEntry(cdfID, numOther, cdflib.getAttrMaxEntry(cdfID, numOther) + 1, 'CDF_CHAR', ...
+   ' ');
+cdflib.putAttrEntry(cdfID, numOther, cdflib.getAttrMaxEntry(cdfID, numOther) + 1, 'CDF_CHAR', ...
+   ' ');
 cdflib.putAttrEntry(cdfID, numOther, cdflib.getAttrMaxEntry(cdfID, numOther) + 1, 'CDF_CHAR', ...
     ' ');
 cdflib.putAttrEntry(cdfID, numOther, cdflib.getAttrMaxEntry(cdfID, numOther) + 1, 'CDF_CHAR', ...
