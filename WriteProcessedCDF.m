@@ -7,8 +7,6 @@ function WriteProcessedCDF(InfoName,DataName,SaveName)
 % cdflib.open() and cdflib.delete()                         %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-addpath('daysimeterIO');
-
 ProcessedData = ReadRaw(InfoName,DataName);
 time = ProcessedData.time;
 
@@ -29,6 +27,7 @@ activity = ProcessedData.activity;
 
 [~,fileName,~] = fileparts(SaveName);
 logicalArray = selectdata(fileName,time,CS,activity);
+% logicalArray = ones(size(time));
 
 %xAccel = 
 %yAccel =

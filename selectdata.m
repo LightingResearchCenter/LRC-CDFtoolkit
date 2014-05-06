@@ -20,6 +20,7 @@ logicalArray = (time >= startTime) & (time <= endTime);
 logicalArray = double(logicalArray);
 
 clf;
+clc;
 
 end
 
