@@ -52,14 +52,17 @@ end
 % -Loops and writes data to records. Note: CDF uses 0       %
 % indexing while MatLab starts indexing at 1.               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for i3 = 1:numRecords
-    for i4 = 1:length(varNames)
-        if strcmp(char(varNames(i4)), 'time')
-            cdflib.putVarData(cdfID, cdflib.getVarNum(cdfID, char(varNames(i4))), ...
-                i3-1, [], cdflib.computeEpoch(timeVec(i3,:)));
-        else
-            cdflib.putVarData(cdfID, cdflib.getVarNum(cdfID, char(varNames(i4))), ...
-                i3-1, [], double(data.Variables.(char(varNames(i4)))(i3)));
+for i3 = 1:length(varNames)
+    numRecords = length(data.Variables.(char(varNames(i3))));
+    if strcmp(char(varNames(i3)), 'time')
+        for i4 = 1:numRecords
+            cdflib.putVarData(cdfID, cdflib.getVarNum(cdfID, char(varNames(i3))), ...
+                i4-1, [], cdflib.computeEpoch(timeVec(i4,:)));
+        end
+    else
+        for i4 = 1:numRecords
+            cdflib.putVarData(cdfID, cdflib.getVarNum(cdfID, char(varNames(i3))), ...
+                i4-1, [], double(data.Variables.(char(varNames(i3)))(i4)));
         end
     end
 end
