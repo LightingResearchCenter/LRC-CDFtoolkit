@@ -15,7 +15,7 @@ function RewriteCDF(data, FileName)
 cdfID = cdflib.create(FileName);
 h = waitbar(0,'Please Wait');
 set(findobj(h,'type','patch'), ...
-'edgecolor','b','facecolor','b')
+    'edgecolor','b','facecolor','b')
 %% Get variable and attribute names
 varNames = fieldnames(data.Variables);
 gAttNames = fieldnames(data.GlobalAttributes);
@@ -28,7 +28,7 @@ timeVec(:,1:6) = timeVecT;
 [i1,i2,i3,i5,i6,i8,i9]= deal(0);
 
 
-%% Create Variables                                          
+%% Create Variables
 
 for i1 = 1:length(varNames)
     if strcmp(char(varNames(i1)), 'time')
@@ -36,24 +36,30 @@ for i1 = 1:length(varNames)
     else
         vars.(char(varNames(i1))) = cdflib.createVar(cdfID, char(varNames(i1)), 'CDF_REAL8', 1, [], true, []);
     end
-    waitbar(num, h,'creating variables')
+    try
+        waitbar(num, h,'creating variables')
+    catch
+    end
 end
 
 
-%% Allocate Records         
-% -Finds the number of entries and allocates space in each  
-% variable.                                                 
+%% Allocate Records
+% -Finds the number of entries and allocates space in each
+% variable.
 
 numRecords = length(data.Variables.time);
 for i2 = 1:length(varNames)
     cdflib.setVarAllocBlockRecords(cdfID, vars.(char(varNames(i2))), 1, numRecords);
-    waitbar(num, h, 'Alocating records')
+    try
+        waitbar(num, h, 'Alocating records')
+    catch
+    end
 end
 
 
 %% Write Records
-% -Loops and writes data to records. Note: CDF uses 0       
-% indexing while MatLab starts indexing at 1.               
+% -Loops and writes data to records. Note: CDF uses 0
+% indexing while MatLab starts indexing at 1.
 
 for i3 = 1:length(varNames)
     numRecords = length(data.Variables.(char(varNames(i3))));
@@ -67,10 +73,13 @@ for i3 = 1:length(varNames)
         for i4 = 1:numRecords
             cdflib.putVarData(cdfID, cdflib.getVarNum(cdfID, char(varNames(i3))), ...
                 i4-1, [], double(data.Variables.(char(varNames(i3)))(i4)));
-
+            
         end
     end
-    waitbar(num, h, 'Writing Records')
+    try
+        waitbar(num, h, 'Writing Records')
+    catch
+    end
 end
 
 
@@ -78,7 +87,10 @@ end
 
 for i5 = 1:length(vAttNames)
     cdflib.createAttr(cdfID, char(vAttNames(i5)), 'variable_scope');
-    waitbar(num, h, 'creating Variable Attributes part 1')
+    try
+        waitbar(num, h, 'creating Variable Attributes part 1')
+    catch
+    end
 end
 
 for i6 = 1:length(vAttNames)
@@ -89,7 +101,10 @@ for i6 = 1:length(vAttNames)
             'CDF_CHAR', char(data.VariableAttributes.(char(vAttNames(i6)))(i7)));
         
     end
-    waitbar(num, h, 'creating Variable Attributes part 2')
+    try
+        waitbar(num, h, 'creating Variable Attributes part 2')
+    catch
+    end
 end
 
 
@@ -97,7 +112,10 @@ end
 
 for i8 = 1:length(gAttNames)
     cdflib.createAttr(cdfID, char(gAttNames(i8)), 'global_scope');
-    waitbar(num, h, 'creating Global Attributes part 1')
+    try
+        waitbar(num, h, 'creating Global Attributes part 1')
+    catch
+    end
 end
 
 for i9 = 1:length(gAttNames)
@@ -110,10 +128,15 @@ for i9 = 1:length(gAttNames)
             cdflib.getAttrMaxgEntry(cdfID, cdflib.getAttrNum(cdfID, char(gAttNames(i9)))) + 1, ...
             'CDF_REAL8', double(data.GlobalAttributes.(char(gAttNames(i9))){1}));
     end
-   waitbar(num, h, 'creating Global Attributes part 2')
+    try
+        waitbar(num, h, 'creating Global Attributes part 2')
+    catch
+    end
 end
-close(h);
-
+try
+    close(h);
+catch
+end
 cdflib.close(cdfID)
     function n=num
         top = i1 + i2 + i3 + i5 + i6 + i8 + i9;
