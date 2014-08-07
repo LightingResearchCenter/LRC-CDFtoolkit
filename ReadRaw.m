@@ -80,11 +80,8 @@ activity = filter5min(activity,logInterval);
 % calculate CS
 CS = CSCalc(CLA);
 
-% find Subject number from file
-[~, subject, ~] = fileparts(DataName);
-
 % Bundle Data
-ProcessedData = struct('subject',subject,'time',time,'red',red,'green',green,'blue',blue,...
+ProcessedData = struct('IDnum',IDnum,'time',time,'red',red,'green',green,'blue',blue,...
     'lux',lux,'CLA',CLA,'CS',CS,'activity',activity,'cal',cal);
 
 end
