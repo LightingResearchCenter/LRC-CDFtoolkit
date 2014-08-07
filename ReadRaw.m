@@ -95,6 +95,12 @@ function data = filter5min(data,epoch)
 %   epoch = sampling epoch in seconds
 minutes = 5; % length of filter (minutes)
 Srate = 1/epoch; % sampling rate in hertz
-b = ones(1,minutes*60*Srate)/(minutes*60*Srate);
-data = filtfilt(b,1,data);
+windowSize = floor(minutes*60*Srate);
+b = ones(1,windowSize)/windowSize;
+
+if epoch <= 150
+    data = filtfilt(b,1,data);
+end
+    
+
 end
