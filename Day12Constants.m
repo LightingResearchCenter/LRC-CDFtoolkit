@@ -1,4 +1,4 @@
-function [Sm, Vm, M, Vp, V, C] = Day12Constants(id)
+function [Sm, Vm, M, Vp, V, C] = Day12Constants
 %pulls dimesimeter constants from a table 
 %id is the id of the dimesimeter
 %Sm is the Scone (macula)

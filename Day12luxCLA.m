@@ -1,6 +1,6 @@
-function [lux, CLA] = Day12luxCLA(Red, Green, Blue, id)
+function [lux, CLA] = Day12luxCLA(Red, Green, Blue)
 
-[Sm, Vm, M, Vp, V, C] = Day12Constants(id);
+[Sm, Vm, M, Vp, V, C] = Day12Constants;
 
 lux = V(1)*Red + V(2)*Green + V(3)*Blue;
 

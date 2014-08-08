@@ -70,7 +70,7 @@ green = G*cal(2);
 blue = B*cal(3);
 
 % calculate lux and CLA
-[lux, CLA] = Day12luxCLA(red, green, blue, IDnum);
+[lux, CLA] = Day12luxCLA(red, green, blue);
 CLA(CLA < 0) = 0;
 
 % filter CLA and activity
