@@ -43,7 +43,7 @@ B = B(q);
 A = A(q);
 
 % create a time array
-time = (1:length(R))/(1/logInterval*60*60*24)+startTime;
+time = (0:length(R)-1)/(1/logInterval*60*60*24)+startTime;
 
 % read R,G,B calibration constants
 g = fopen('\\ROOT\projects\DaysimeterAndDimesimeterReferenceFiles\data\Day12 RGB Values.txt');
