@@ -84,7 +84,7 @@ else
 end% end of if has.CS statement
 output.Variables.activity=data.Activity;
 if strcmpi(input.timeOffset,'default')
-   output.Variables.timeOffset = str2num(timezone)*60*60;
+   output.Variables.timeOffset = str2num(txt2cdf.timezone)*60*60;
 else
    output.Variables.timeOffset = str2num(input.timeOffset)*60*60;
 end%end of if strcmpi function
