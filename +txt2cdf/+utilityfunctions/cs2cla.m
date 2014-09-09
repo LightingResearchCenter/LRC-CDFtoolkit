@@ -4,7 +4,7 @@ function [ CLA ] = cs2cla( CS )
 % value
 
 %% Conversion Function
-CLA = 355.7 * -ln(1-(CS/.7))/ln(1.1026);
+CLA = 355.7 * -log(1-(CS/.7))/log(1.1026);
 
 end
 

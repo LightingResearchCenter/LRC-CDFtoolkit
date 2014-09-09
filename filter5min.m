@@ -1,4 +1,4 @@
-function data = filter5min(data,epoch)
+ function data = filter5min(data,epoch)
 %FILTER5MIN Lowpass filter data series with zero phase delay,
 %   moving average window.
 %   epoch = sampling epoch in seconds
@@ -10,6 +10,5 @@ b = ones(1,windowSize)/windowSize;
 if epoch <= 150
     data = filtfilt(b,1,data);
 end
-    
 
 end
