@@ -1,4 +1,8 @@
 function newtime = smarttimeconvert(time)
+% smarttimeconvert will take in a time array and will attempt to convert it
+% to the most likely time unit and epoch. it asks for user input to decide
+% the epoch and if needed the user can input their own epoch as needed. 
+%
 interval= mode(diff(time));
 if interval >=300
    %Time is stored in Milliseconds used in CDF formats

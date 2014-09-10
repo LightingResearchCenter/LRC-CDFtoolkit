@@ -1,4 +1,7 @@
 function output = createCDFstruct()
+% createCDFstruct will generate the structure that we use when storing
+% daysimeter data in matlab. it is mainly empty except for a few
+% discriptions of variables and units. 
 %% Create Struct creation
 output = struct('Variables',[],...
     'GlobalAttributes',     [],...

@@ -4,6 +4,9 @@ function WriteCDF(ProcessedData,savePath)
 %   filename is not already taken. If file exists, creation
 %   will fail. Deletion of files may be manual, or by using
 %   cdflib.open() and cdflib.delete()
+%   this is a special function that is ment to work with txt2cdf it will
+%   ask for user input to fill in for some of the information that is
+%   missing from generating the data from a file. 
 
 time = ProcessedData.Variables.time;
 timeOffset = ProcessedData.Variables.timeOffset;
