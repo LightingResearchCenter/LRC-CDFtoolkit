@@ -1,4 +1,4 @@
-function txt2cdf(file,varargin)
+function [ path ] = txt2cdf(file,varargin)
 % TXT2CDF Will take a text file and create a CDF file from it.
 % This will be using a new method of checking the inputs as a testing for
 % future programs written. it will use the PARSE function.
@@ -56,7 +56,7 @@ function [output,newFilePath]= convert(input)
 %% Create variables
 [path,name] = fileparts(input.file);
 data = readtable(input.file,'Delimiter',input.delimiter,...
-				'HeaderLines',input.headerlines); %gathers info from file
+				'HeaderLines',input.headerLines); %gathers info from file
 output = txt2cdf.createCDFstruct();
 output = getserialnumber(input.file,output);
 %% Format variables
